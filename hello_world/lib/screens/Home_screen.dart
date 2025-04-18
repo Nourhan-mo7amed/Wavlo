@@ -1,27 +1,38 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  bool _fabExpanded = false;
+
+  void toggleFab() {
+    setState(() {
+      _fabExpanded = !_fabExpanded;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        backgroundColor: Colors.grey[100],
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
-          title: Row(
-            children: [
-              const Text(
-                "WAVLO",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.deepOrange,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          title: const Text(
+            "WAVLO",
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.deepOrange,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           actions: const [
             Icon(Icons.search, color: Colors.deepOrange),
@@ -29,25 +40,81 @@ class HomeScreen extends StatelessWidget {
             Icon(Icons.more_vert, color: Colors.deepOrange),
             SizedBox(width: 10),
           ],
-          bottom: const TabBar(
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.grey,
-            indicator: BoxDecoration(
-              color: Colors.deepOrange,
-              borderRadius: BorderRadius.all(Radius.circular(30)),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(48),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: TabBar(
+                labelStyle: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.black87,
+                indicator: BoxDecoration(
+                  color: Colors.deepOrange,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                indicatorSize: TabBarIndicatorSize.tab, // ياخد العرض كله
+                tabs: const [
+                  Tab(child: Center(child: Text("All Chats"))),
+                  Tab(child: Center(child: Text("Status"))),
+                  Tab(child: Center(child: Text("Call"))),
+                ],
+              ),
             ),
-            tabs: [
-              Tab(text: "All Chats"),
-              Tab(text: "Status"),
-              Tab(text: "Call"),
-            ],
           ),
         ),
-        body: const ChatList(),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.deepOrange,
-          onPressed: () {},
-          child: const Icon(Icons.add),
+        body: const TabBarView(
+          children: [
+            ChatList(),
+            Center(child: Text("Status")),
+            Center(child: Text("Call")),
+          ],
+        ),
+        floatingActionButton: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (_fabExpanded) ...[
+              FloatingActionButton(
+                heroTag: 'fab1',
+                mini: true,
+                backgroundColor: Colors.deepOrange,
+                onPressed: () {},
+                child: const Icon(Icons.person_add, color: Colors.white),
+              ),
+              const SizedBox(height: 8),
+              FloatingActionButton(
+                heroTag: 'fab2',
+                mini: true,
+                backgroundColor: Colors.deepOrange,
+                onPressed: () {},
+                child: const Icon(Icons.group, color: Colors.white),
+              ),
+              const SizedBox(height: 8),
+              FloatingActionButton(
+                heroTag: 'fab3',
+                mini: true,
+                backgroundColor: Colors.deepOrange,
+                onPressed: () {},
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+              const SizedBox(height: 16),
+            ],
+            FloatingActionButton(
+              backgroundColor: Colors.deepOrange,
+              onPressed: toggleFab,
+              child: Icon(
+                _fabExpanded ? Icons.close : Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -113,7 +180,7 @@ class ChatList extends StatelessWidget {
         'name': 'Leslie Alexander',
         'company': 'See you Tomorrow',
         'time': '2:18 PM',
-        'image': 'https://randomuser.me/api/portraits/men/9.jpg',
+        'image': 'https://randomuser.me/api/portraits/women/9.jpg',
       },
     ];
 
